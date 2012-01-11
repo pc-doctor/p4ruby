@@ -32,7 +32,7 @@ class Installer
   SERVER_TOP_DIR = Pathname.new "perforce"
 
   # Mysterious "ghost" releases which lack files
-  HOSED_VERSIONS = %w[09.3]
+  HOSED_VERSIONS = %w[09.3 11.2]
 
   P4API_REMOTE_BASENAME = Pathname.new "p4api.tgz"
   P4RUBY_REMOTE_BASENAME = Pathname.new "p4ruby.tgz"
@@ -126,7 +126,7 @@ class Installer
         DISTFILES_DIR + spec.basename
       }
     }
-    
+
     unless @s.platform
       @s.attribute(:platform) {
         guess_platform
@@ -182,6 +182,7 @@ class Installer
     if match = `uname -a`.match(%r!#{os}\s+\S+\s+(\d+)\.(\d+)!i)
       version = match.captures.join
       cpu = guess_cpu
+
       platforms = self.platforms
       (0..version.to_i).map { |n|
         [os, n.to_s, cpu].join
@@ -218,22 +219,22 @@ class Installer
       @s.platform = "<platform>"
       message = %Q{
         Auto-fetch not yet handled for this platform.  Run:
-    
+
         \truby install.rb --list-platforms
-    
+
         to see the available platforms, then run
-    
+
         \truby install.rb --platform PLATFORM
-    
+
         with your platform.
-    
+
         If all of the above fails, manually fetch
-    
+
         \tftp://#{SERVER}/#{@s.p4api.remote}
-    
+
         Copy it to #{@s.p4api.local} and run install.rb --local.
       }.gsub(%r!^ +(?=\S)!, "")
-  
+
       mkdir_p(DISTFILES_DIR)
       puts message
     }
@@ -378,7 +379,7 @@ class Installer
     # perforce server -- switcharoo --
     #
     spec = @s.p4api
-    
+
     version = [CONFIG["MAJOR"], CONFIG["MINOR"]].join
     spec.basename = "p4ruby#{version}.exe"
     fetch_spec(spec)
@@ -447,7 +448,7 @@ class LazyStruct < OpenStruct
             }
           }
         }
-        
+
         #
         # Revert to the old OpenStruct behavior when the writer is called.
         #
@@ -462,7 +463,7 @@ class LazyStruct < OpenStruct
       }
     end
   end
-  
+
   include Mixin
 end
 
